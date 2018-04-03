@@ -121,14 +121,9 @@ RUN groupadd fuse \
     && useradd --create-home --shell /bin/bash --user-group --uid 1000 --groups sudo,fuse biodocker && \
     echo `echo "biodocker\nbiodocker\n" | passwd biodocker`\
     && apt-get remove -y git wget cmake\
-    && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Change user
 USER biodocker
-
-# RUN mkdir /data
-
-# WORKDIR /data/
 
 CMD ["/bin/bash"]
