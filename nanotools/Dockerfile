@@ -120,7 +120,6 @@ ENV PATH $PATH:/nanopolish:/nanopolish/scripts:/bwa:/samtools:/minimap2:/miniasm
 RUN groupadd fuse \
     && useradd --create-home --shell /bin/bash --user-group --uid 1000 --groups sudo,fuse biodocker && \
     echo `echo "biodocker\nbiodocker\n" | passwd biodocker`\
-    && apt-get remove -y git wget cmake\
     && rm -rf /var/lib/apt/lists/*
 
 # Change user
