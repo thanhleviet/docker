@@ -2,7 +2,7 @@ FROM ubuntu:trusty
 MAINTAINER Thanh Le Viet lethanhx2k@gmail.com
 
 #Update: 07/09/2017
-ENV DEB_URL https://mirror.oxfordnanoportal.com/software/analysis/python3-ont-albacore_2.2.6-1~trusty_all.deb
+ENV DEB_URL https://mirror.oxfordnanoportal.com/software/analysis/python3-ont-albacore_2.2.6-1~xenial_amd64.deb
 
 WORKDIR /root
 
