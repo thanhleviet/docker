@@ -18,6 +18,7 @@ RUN curl -LJO https://github.com/onecodex/finch-rs/releases/download/v0.1.5/finc
     rm finch-linux64-v0.1.5.tar
 
 RUN curl -LJO https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 &&\
-    mv jq-linux64 bin/jq
+    mv jq-linux64 bin/jq &&\
+    chmod +x bin/jq
 
 CMD ["/bin/bash"]
