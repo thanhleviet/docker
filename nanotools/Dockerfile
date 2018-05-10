@@ -98,6 +98,7 @@ RUN git clone https://github.com/rrwick/Porechop.git \
 #Canu
 RUN git clone https://github.com/marbl/canu.git \
     && cd canu/src \
+    && git checkout c9ef9219 \
     && make -j 8 \
     && cd / \
     && chmod -R 775 canu
