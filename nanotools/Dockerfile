@@ -39,7 +39,7 @@ RUN apt-get install -y --no-install-recommends python python-pip \
     && apt-get install -y --no-install-recommends python3.6 python3-setuptools
 
 
-ENV nanopolish_version=v0.8.4
+ENV nanopolish_version=v0.9.0
 ENV bwa_version=v0.7.17
 ENV samtools_version=1.5
 
