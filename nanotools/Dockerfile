@@ -14,7 +14,8 @@ RUN apt-get update &&\
     libncurses5-dev \
     autoconf \
     python-setuptools \
-    libhts-dev
+    libhts-dev \
+    parallel
 
 #Java
 ENV DEBIAN_FRONTEND noninteractive
