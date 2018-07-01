@@ -14,7 +14,8 @@ RUN apt-get update &&\
     libncurses5-dev \
     autoconf \
     python-setuptools \
-    libhts-dev
+    libhts-dev \
+    parallel
 
 #Java
 ENV DEBIAN_FRONTEND noninteractive
@@ -39,7 +40,7 @@ RUN apt-get install -y --no-install-recommends python python-pip \
     && apt-get install -y --no-install-recommends python3.6 python3-setuptools
 
 
-ENV nanopolish_version=v0.8.4
+ENV nanopolish_version=v0.9.0
 ENV bwa_version=v0.7.17
 ENV samtools_version=1.5
 
@@ -98,6 +99,7 @@ RUN git clone https://github.com/rrwick/Porechop.git \
 #Canu
 RUN git clone https://github.com/marbl/canu.git \
     && cd canu/src \
+    && git checkout c9ef9219 \
     && make -j 8 \
     && cd / \
     && chmod -R 775 canu
