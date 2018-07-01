@@ -1,51 +1,109 @@
-# Base Image
-FROM biocontainers/biocontainers:latest
+# Modified from https://github.com/m-bull/containers/blob/master/PHEnix/Dockerfile
+FROM centos:latest
 
-# Metadata
-LABEL base.image="biocontainers:latest"
-LABEL version="1"
-LABEL software="PHEnix"
-LABEL software.version="1.3 commit bcbba63"
-LABEL description="Public Health England SNP calling Pipeline"
-LABEL website="https://github.com/phe-bioinformatics/PHEnix"
-LABEL documentation="http://phenix.readthedocs.io/en/latest/"
-LABEL license="https://github.com/phe-bioinformatics/PHEnix/blob/master/LICENSE"
-LABEL tags="General,Genomics,SNP"
+RUN yum -y update
 
-# Maintainer
-MAINTAINER Le Viet Thanh <thanhlv@oucru.org>
+RUN yum -y install epel-release
 
-COPY tools/GenomeAnalysisTK-3.7-0.tar.bz2 /home/biodocker/bin
+RUN yum -y install \
+         bzip2 \
+         bzip2-devel \
+         Cython \
+         gcc \
+         gcc-c++ \
+         git \
+         java-1.8.0-openjdk \
+         libcurl-devel \
+         libzip-devel \
+         make \
+         ncurses-devel \
+         numpy \
+         python-devel \
+         python-matplotlib \ 
+         python-psycopg2 \
+         python2-pip \
+         unzip \
+         wget \
+         xz-devel \
+         zlib-devel \
+    && yum clean all \
+    && rm -rf /var/cache/yum
 
-RUN conda install bwa \
-                  samtools \
-                  bcftools \
-                  bwa \
-                  bowtie2 \
-                  picard \
-                  gatk=3.7
+ENV PICARD_VERSION="2.17.10" \
+    PICARD_BIN="picard.jar" \
+    PICARD_DEST="/usr/local/bin/picard.jar" \
+    GATK_SOURCE="GenomeAnalysisTK-3.8-1-0-gf15c1c3ef.tar.bz2" \
+    GATK_VERSION="3.8-1-0-gf15c1c3ef" \
+    GATK_BIN="GenomeAnalysisTK.jar" \
+    GATK_DEST="/usr/local/bin/GenomeAnalysisTK.jar" \
+    BWA_SOURCE="bwa-0.7.15.tar.bz2" \
+    BWA_VERSION="0.7.15" \
+    BWA_BIN="bwa" \
+    BWA_DEST="/usr/local/bin/bwa" \
+    SAMTOOLS_SOURCE="samtools-1.7.tar.bz2" \
+    SAMTOOLS_VERSION="1.7" \
+    SAMTOOLS_BIN="samtools" \
+    SAMTOOLS_DEST="/usr/local/bin/samtools" \
+    BCFTOOLS_SOURCE="bcftools-1.7.tar.bz2" \
+    BCFTOOLS_VERSION="1.7" \
+    BCFTOOLS_BIN="bcftools" \
+    BCFTOOLS_DEST="/usr/local/bin/bcftools" \
+    QUALIMAP_VERSION="2.2.1" \
+    PATH=$PATH:/opt/qualimap
 
-RUN gatk-register /home/biodocker/bin/GenomeAnalysisTK-3.7-0.tar.bz2
+RUN wget "https://github.com/broadinstitute/picard/releases/download/$PICARD_VERSION/$PICARD_BIN" -O $PICARD_DEST
+ENV PICARD_JAR=/usr/local/bin/picard.jar    
+
+RUN curl -o $GATK_SOURCE -L "https://software.broadinstitute.org/gatk/download/auth?package=GATK-archive&version=$GATK_VERSION" \
+ && tar -xjf $GATK_SOURCE \
+ && mv GenomeAnalysisTK-$GATK_VERSION/$GATK_BIN $GATK_DEST \
+ && rm -f $GATK_SOURCE
+
+ENV GATK_JAR=/usr/local/bin/GenomeAnalysisTK.jar
+
+RUN wget "https://github.com/lh3/bwa/releases/download/v$BWA_VERSION/$BWA_SOURCE" -O /opt/$BWA_SOURCE \
+    && tar -xvf /opt/$BWA_SOURCE -C /opt \
+    && cd /opt/bwa-$BWA_VERSION \
+    && make \
+    && ln -s /opt/bwa-$BWA_VERSION/$BWA_BIN $BWA_DEST \
+    && rm /opt/$BWA_SOURCE
+
+RUN wget "https://github.com/samtools/samtools/releases/download/$SAMTOOLS_VERSION/$SAMTOOLS_SOURCE" -O /opt/$SAMTOOLS_SOURCE \
+    && tar -xvf /opt/$SAMTOOLS_SOURCE -C /opt \
+    && cd /opt/samtools-$SAMTOOLS_VERSION \
+    && ./configure \
+    && make \
+    && ln -s /opt/samtools-$SAMTOOLS_VERSION/$SAMTOOLS_BIN $SAMTOOLS_DEST \
+    && rm /opt/$SAMTOOLS_SOURCE
+
+RUN wget "https://github.com/samtools/bcftools/releases/download/$BCFTOOLS_VERSION/$BCFTOOLS_SOURCE" -O /opt/$BCFTOOLS_SOURCE \
+    && tar -xvf /opt/$BCFTOOLS_SOURCE -C /opt \
+    && cd /opt/bcftools-$BCFTOOLS_VERSION \
+    && ./configure \
+    && make \
+    && ln -s /opt/bcftools-$BCFTOOLS_VERSION/$BCFTOOLS_BIN $BCFTOOLS_DEST \
+    && rm /opt/$BCFTOOLS_SOURCE
 
 
-RUN pip install --no-cache-dir numpy \
-                               biopython\
-                               bintrees \
-                               matplotlib \
-                               argparse \
-                               PyYAML\
-                               PyVCF &&\
-    git clone https://github.com/phe-bioinformatics/PHEnix.git /home/biodocker/bin/PHEnix &&\
-    mv /home/biodocker/bin/PHEnix/phe /home/biodocker/bin/PHEnix/scripts/phe &&\
-    sed -i '1i\#!/usr/bin/env python' /home/biodocker/bin/PHEnix/scripts/prepare_reference.py &&\
-    sed -i '1i\#!/usr/bin/env python' /home/biodocker/bin/PHEnix/scripts/filter_vcf.py &&\
-    sed -i '1i\#!/usr/bin/env python' /home/biodocker/bin/PHEnix/scripts/vcf2fasta.py
-    # chmod +x /home/biodocker/bin/PHEnix/scripts/*.py
+RUN wget "https://github.com/BenLangmead/bowtie2/releases/download/v2.3.4.1/bowtie2-2.3.4.1-linux-x86_64.zip" -O /usr/local/bin/bowtie2-2.3.4.1-linux-x86_64.zip \
+ && cd /usr/local/bin && unzip bowtie2-2.3.4.1-linux-x86_64.zip \
+ && rm /usr/local/bin/bowtie2-2.3.4.1-linux-x86_64.zip
 
-ENV PATH=${PATH}:/home/biodocker/bin/PHEnix/scripts
-ENV GATK_JAR=/opt/conda/opt/gatk-3.7/GenomeAnalysisTK.jar
-ENV PICARD_JAR=/opt/conda/share/picard-2.9.2-1/picard.jar
+RUN wget "https://github.com/shenwei356/seqkit/releases/download/v0.8.1/seqkit_linux_amd64.tar.gz" -O /usr/local/bin/seqkit_linux_amd64.tar.gz \
+ && cd /usr/local/bin && tar xvzf seqkit_linux_amd64.tar.gz \
+ && rm /usr/local/bin/seqkit_linux_amd64.tar.gz
 
-RUN conda clean -a
+# Install BamQC https://hub.docker.com/r/maxulysse/qualimap/~/dockerfile/
+RUN \
+  wget --quiet -O qualimap_v${QUALIMAP_VERSION}.zip \
+    https://bitbucket.org/kokonech/qualimap/downloads/qualimap_v${QUALIMAP_VERSION}.zip \
+  && unzip qualimap_v${QUALIMAP_VERSION}.zip -d /opt/ \
+  && rm qualimap_v${QUALIMAP_VERSION}.zip \
+  && mv /opt/qualimap_v${QUALIMAP_VERSION} /opt/qualimap
 
-WORKDIR /data/
+RUN for i in $(find /usr/local/bin/bowtie2-2.3.4.1-linux-x86_64 -executable -type f); do \
+    ln -s $i /usr/local/bin; \
+    done
+
+RUN git clone https://github.com/phe-bioinformatics/PHEnix.git \
+    && pip2 install -e PHEnix
