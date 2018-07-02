@@ -1,33 +1,32 @@
 # Modified from https://github.com/m-bull/containers/blob/master/PHEnix/Dockerfile
-FROM centos:latest
+FROM ubuntu:17.10
 
-RUN yum -y update
+RUN apt-get -y update
 
-RUN yum -y install epel-release
-
-RUN yum -y install \
+RUN apt-get install --no-install-recommends -y \
          bzip2 \
-         bzip2-devel \
-         Cython \
+         libbz2-dev \
+         cython \
          gcc \
-         gcc-c++ \
+         g++ \
          git \
-         java-1.8.0-openjdk \
-         libcurl-devel \
-         libzip-devel \
+         openjdk-8-jdk \
+         libcurl4-openssl-dev \
+         zlib1g-dev \
          make \
-         ncurses-devel \
-         numpy \
-         python-devel \
+         ncurses-dev \
+         python-numpy \
+         python-dev \
          python-matplotlib \ 
          python-psycopg2 \
-         python2-pip \
+         python-pip \
+         python-setuptools \
          unzip \
+         curl \
          wget \
-         xz-devel \
-         zlib-devel \
-    && yum clean all \
-    && rm -rf /var/cache/yum
+         liblzma-dev \
+    && apt-get clean all \
+    && rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin
 
 ENV PICARD_VERSION="2.17.10" \
     PICARD_BIN="picard.jar" \
@@ -107,3 +106,5 @@ RUN for i in $(find /usr/local/bin/bowtie2-2.3.4.1-linux-x86_64 -executable -typ
 
 RUN git clone https://github.com/phe-bioinformatics/PHEnix.git \
     && pip2 install -e PHEnix
+
+CMD ["phenix.py"]
