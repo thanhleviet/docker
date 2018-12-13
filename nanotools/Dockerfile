@@ -114,8 +114,12 @@ RUN sed -i '1i #!/usr/bin/env python' /nanopolish/scripts/nanopolish_makerange.p
     && sed -i '1i #!/usr/bin/env python' /nanopolish/scripts/nanopolish_merge.py \
     && chmod +x /nanopolish/scripts/nanopolish_merge.py
 
+# Spades
 
-ENV PATH $PATH:/nanopolish:/nanopolish/scripts:/bwa:/samtools:/minimap2:/miniasm:/canu/Linux-amd64/bin:/ncbi-blast-2.6.0+/bin
+RUN wget http://cab.spbu.ru/files/release3.13.0/SPAdes-3.13.0-Linux.tar.gz && tar -xf SPAdes-3.13.0-Linux.tar.gz
+
+
+ENV PATH $PATH:/nanopolish:/nanopolish/scripts:/bwa:/samtools:/minimap2:/miniasm:/canu/Linux-amd64/bin:/ncbi-blast-2.6.0+/bin:/SPAdes-3.12.0-Linux/bin
 
 # Add user biodocker with password biodocker
 # https://github.com/BioContainers/containers/blob/master/biodocker/Dockerfile
