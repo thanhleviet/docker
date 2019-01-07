@@ -2,10 +2,9 @@ FROM continuumio/miniconda3
 
 MAINTAINER Thanh Le Viet lethanhx2k@gmail.com
 
-# RUN apt-get update &&\
-    # apt-get install -y build-essential &&\
-    # cpan YAML::Tiny 
-    # cpanm YAML::Tiny
+RUN apt-get update &&\
+    apt-get install -y build-essential &&\
+    rm -rf /var/lib/apt/lists/*
 
 RUN conda install -c bioconda perl-yaml-tiny \
                               perl-path-tiny \
@@ -30,6 +29,8 @@ RUN conda install -c bioconda -c conda-forge seqtk \
                               mash=2.1 \
                               centrifuge \
                               newick_utils
+
+RUN conda clean --all
 
 RUN git clone https://github.com/tseemann/nullarbor.git
 
