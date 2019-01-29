@@ -2,9 +2,6 @@ FROM centos:centos7
 
 LABEL maintainer="lethanhx2k@gmail.com"
 
-
-COPY install_aspera_connect.sh /tmp/install.sh
-
 # Shamelessly stolen from https://github.com/aertslab/install_aspera_connect
 RUN aspera_connect_url=$(curl 'https://downloads.asperasoft.com/en/downloads/8?list' \
       | grep -oE 'https://download.asperasoft.com/download/sw/connect/[0-9.]+/ibm-aspera-connect-[0-9.]+-linux-.+\.tar.gz') \
