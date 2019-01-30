@@ -11,10 +11,11 @@ RUN aspera_connect_url=$(curl 'https://downloads.asperasoft.com/en/downloads/8?l
       && tar xzf ${aspera_connect_tarball} \
       && "./${aspera_connect_install_script}" \
       && cp /root/.aspera/connect/etc/*.* /etc/ \
-      && cp /root/.aspera/connect/bin/* /usr/local/bin
+      && cp /root/.aspera/connect/bin/* /usr/local/bin \
+      && rm ${aspera_connect_install_script} ${aspera_connect_tarball}
+    
+# RUN useradd data
 
-RUN useradd data
-
-USER data
+# USER data
 
 CMD ["/bin/bash"]
