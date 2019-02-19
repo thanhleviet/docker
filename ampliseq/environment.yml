@@ -13,7 +13,7 @@ dependencies:
   - multiqc=1.6 #newest version
   - unzip=6.0 #required for silva unzippping
   - r-rmarkdown=1.10
-  - ncurses=5.9
+  # - conda-forge::ncurses=5.9
   - _r-mutex=1.0.0
   - arb-bio-tools=6.0.6
   - asn1crypto=0.24.0
