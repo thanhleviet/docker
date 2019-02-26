@@ -13,3 +13,5 @@ dependencies:
   - kraken2
   - bbmap
   - kmc
+  - minimap2
+  - samtools
