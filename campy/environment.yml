@@ -1,0 +1,17 @@
+name: campy
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+  - bioconda
+  - biocore
+dependencies:
+  - seqkit
+  - seqtk
+  - rename
+  - centrifuge
+  - kraken2
+  - bbmap
+  - kmc
+  - minimap2
+  - samtools
