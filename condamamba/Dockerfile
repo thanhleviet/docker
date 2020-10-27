@@ -1,4 +1,4 @@
-FROM continuumio/miniconda3:4.2.2
+FROM continuumio/miniconda3:4.8.2
 
 LABEL maintainer="Thanh Le Viet"
 LABEL description="mamba for conda"
